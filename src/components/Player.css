@@ -1,0 +1,246 @@
+.Stopwatch-display{
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+#bhado{
+    position: fixed;
+    bottom: 0px;
+    background: antiquewhite;
+    /*#141414 and #1B1B1B */
+    width: 100%; 
+    height: 75px;
+    left: 0px;
+}
+
+#title {
+    position: absolute;
+    left: 0%;
+    width: 25%;
+    height: 75px;
+    font-size: 10px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.33);
+    /* background: violet; */
+    text-align: center;
+}
+
+#title #icon{
+    height: 90%;
+    margin: 1%;
+    width: 20%;
+    background: brown;
+}
+
+#title #songinfo{
+    position: absolute;
+    left: 25%;
+    width: 30%;
+    /* background: cadetblue; */
+    height: 80%;
+    top: 10%;
+    bottom: 10%;
+}
+
+#title #songinfo #upper{
+    position: absolute;
+    height: 50%;
+    width: 100%;
+    /* background: brown; */
+    /* add top property for the inner text tag */
+    
+}
+#title #songinfo #lower{
+    position: absolute;
+    top: 50%;
+    height: 50%;
+    width: 100%;
+    /* background: purple; */
+    /* add top property for the inner text tag */
+    
+}
+#title #favbutton{
+    position: absolute;
+    left: 60%;
+    width: 20%;
+    /* background: cadetblue; */
+    height: 50%;
+    top: 10%;
+    bottom: 10%;
+    /* add centralizing stylig for icon tag inside this */
+}
+
+#progressbar{
+    position: absolute;
+    left:25%;
+    width: 50%;
+    height: 75px;
+    bottom: 0px;
+    /* background: blue; */
+
+}
+
+#progressbar #upper_section{
+    
+    height: 50%;
+    top: 0px;
+    /* background: black; */
+}
+
+#progressbar #upper_section #five0{
+    position: absolute;
+    height: 50%;
+    /* background: brown; */
+    width: 20%;
+    /* border-color: brown;
+    border-width: 5px;
+    border-style: double; */
+    
+}
+
+#progressbar #upper_section #five1{
+    position: absolute;
+    height: 50%;
+    top: 0px;
+    /* background: brown; */
+    left: 20%;
+    width: 20%;
+    /* border-color: brown;
+    border-width: 5px;
+    border-style: double;  */
+}
+
+#progressbar #upper_section #five2{
+    position: absolute;
+    height: 50%;
+    top: 0px;
+    /* background: brown; */
+    left: 40%;
+    width: 20%;
+    /* border-color: brown;
+    border-width: 5px;
+    border-style: double;  */
+}
+
+#progressbar #upper_section #five3{
+    position: absolute;
+    height: 50%;
+    top: 0px;
+    /* background: brown; */
+    left: 60%;
+    width: 20%;
+    /* border-color: brown;
+    border-width: 5px;
+    border-style: double;  */
+}
+
+#progressbar #upper_section #five4{
+    position: absolute;
+    height: 50%;
+    top: 0px;
+    /* background: brown; */
+    left: 80%;
+    width: 20%;
+    /* border-color: brown;
+    border-width: 5px;
+    border-style: double;  */
+}
+
+#progressbar #lower_section{
+    height: 50%;
+    bottom: 0px;
+    /* background:orange; */
+    /* position: inherit; */
+}
+
+#progressbar #lower_section #elapsedtime{
+    /* position: inherit; */
+    left: 0px;
+    width: 5%;
+    bottom: 0px;
+    height: 100%;
+    /* background: blanchedalmond; */
+}
+
+#progressbar #lower_section #progress{
+    position: absolute;
+    left: 5%;
+    width: 90%;
+    bottom: 0px;
+    height: 50%;
+    /* background: brown; */
+}
+
+#progressbar #lower_section #progress #seek_bar{
+    width: 100%;
+    height: 5px;
+    background-color:gray;
+    display: flex;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 2%;
+}
+
+#progressbar #lower_section #progress #fill{
+    height: 5px;
+    background-color:royalblue;
+    border-radius: 20px;
+}
+
+#progressbar #lower_section #progress #handle{
+    width: 8px;
+    height: 8px;
+    background-color:royalblue;
+    border-radius: 50%;
+    margin-left: -5px;
+    transform: scale(2);
+}
+
+#progressbar #lower_section #totaltime{
+    position: absolute;
+    left: 95%;
+    width: 5%;
+    bottom: 0px;
+    height: 50%;
+    /* background: red; */
+}
+
+#volumebar{
+    position: absolute;
+    top: 0%;
+    right: 0px;
+    width: 25%;
+    height: 75px;
+    bottom: 0px;
+    /* background: indigo; */
+}
+
+#volumebar #mute{
+    cursor: pointer;
+    
+}
+
+#volumebar #vollabel{
+    /* background: blueviolet; */
+    padding-top: 8%;
+    padding-left: 20%;
+}
+
+#volumebar #bar{
+    position: absolute;
+    margin-left: 5%;
+    height: 2px;
+    width: 50%;
+    top: 55%;
+    /* background: black; */
+}
+
+#volumebar #volumesliderBtn{
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    top: 50%;
+    border-radius: 5px;
+    /* background: black; */
+    margin: -5px auto ;
+    left: 75%;
+}
