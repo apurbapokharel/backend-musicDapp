@@ -174,25 +174,21 @@ class Home extends Component {
   }
 
   // third step upload file to IPFS
-  onSubmitt = (event) => {
+  onSubmitt = async (event) => {
+    console.log( process.env.REACT_APP_API_KEY,  process.env.REACT_APP_API_SECRET)
     event.preventDefault()
+    const input = {
+      apiKey: new String(process.env.REACT_APP_API_KEY),
+      apiSecret: new String(process.env.REACT_APP_API_SECRET),
+      key: `my-folder/my-file-name`,
+      data: this.state.buffer,
+    };
     console.time("upload to ipfs")
-    ipfs.add(this.state.buffer, (error, result)=> {
-        // console.log('Ipfs reault', result)
-        console.timeEnd("upload to ipfs")
-        const musicHash = result[0].hash
-        this.setState({musicHash : musicHash})
-        if(error) {
-          return 
-        }
-        if(musicHash !== ''){
-          window.alert('File uploaded to IPFS press Add Product')
-        }
-        else{
-          window.alert('File uploaded to IPFS failed')
-        } 
-    })
+    const result = await fleek.upload(input)
+    console.timeEnd("upload to ipfs")
+    console.log(result)
   }
+
 
   //4th step download file from ipfs using hash
   download (id){
@@ -211,26 +207,30 @@ class Home extends Component {
     })
   }
 
-  onDownload = () => {
+  onDownload =async () => {
+    const input = {
+      apiKey: new String(process.env.REACT_APP_API_KEY),
+      apiSecret: new String(process.env.REACT_APP_API_SECRET),
+      key: `my-folder/my-file-name`,
+      getOptions: ['hash', 'data', 'publicUrl', 'key']      
+    };
     console.time("get file");
-    ipfs.get(this.state.musicHash,  (err, files) => {
-      if(err){
-        console.log('error are', err)
+    const result = await fleek.get(input);
+    console.timeEnd("get file");
+    console.log(result.data);
+
+    this.setState({buffer : result.data}, ()=> {
+      if(this.state.downloadStatus ===1){
+        this.setState({downloadStatus : 0}) 
+        this.on5thStep(this.decrypt.bind(this), this.onGetFile.bind(this))
       }
-        console.timeEnd("get file");
-        console.log('files', files)
-        this.setState({buffer : files[0].content}, ()=> {
-          if(this.state.downloadStatus ===1){
-            this.setState({downloadStatus : 0}) 
-            this.on5thStep(this.decrypt.bind(this), this.onGetFile.bind(this))
-          }
-          if(this.state.streamStatus ===1){
-            this.setState({streamStatus : 0}) 
-            this.on5thStep(this.decrypt.bind(this), this.howlMusic.bind(this))
-          }
-        })
-    }) 
+      if(this.state.streamStatus ===1){
+        this.setState({streamStatus : 0}) 
+        this.on5thStep(this.decrypt.bind(this), this.howlMusic.bind(this))
+      }
+    })
   }
+
 
   async decrypt(){
     var str = uintToString(this.state.buffer)
@@ -264,35 +264,15 @@ class Home extends Component {
   }
 
   createProduct(name, price, musicHash, aesKey) {
-    // this.setState({ loading:true}) //anytime we are creating a product loading should be true
-    // this.state.contract.methods.musicAdd(name, price, musicHash, aesKey).send({ from : this.state.account }) //method will expose fucntion of the SC
-    // //also here we are using send because we are sending ether
-    // .once('receipt',(receipt) => { //this receipt is given after a txn
-    //   this.setState({ loading:false })  
-    // })
-
     this.setState({ 
       loading:true}, () => {
         this.state.contract.methods.musicAdd(name, price, musicHash, aesKey).send({ from : this.state.account })
         this.setState({ loading:false })
       }
     )
-    // window.location.reload(false)
   }
   
   purchaseProduct(id) {
-    // this.setState({ loading:true}) //anytime we are creating a product loading should be true
-    // await this.state.contract.methods.musicPurchase(id).send({ from : this.state.account, value: price })
-    // //method will expose fucntion of the SC
-    // //also here we are using send because we are sending ether
-    // //value is used kinki in our test we have passed from and value parameter while sending ether 
-    // .once('receipt',(receipt) => { //this receipt is given after a txn
-    //   this.setState({bought: true})
-    //   this.setState({ loading:false })
-    //   console.log('transaction is given inside .once')
-    //   console.log('bought value is', (this.state.bought))
-    // })
-
     this.setState({ 
       loading:true}, () => {
         this.state.contract.methods.musicPurchase(id).send({ from : this.state.account })
