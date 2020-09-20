@@ -1,19 +1,27 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { assignIdentifier } from '../action/index';
 
-class Main extends Component {
-
-  render() {
+function Main(props) {
+  const [productName, setProductName] = useState('');
+  const [productAname, setProductAname] = useState('');
+  const [productPrice, setProductPrice] = useState('');
+  const [productIdentifier, setProductIdentifier] = useState('');
+  const dispatch = useDispatch()
+  // const [username, setUsername] = useState('');
+  // const [password, setPassword] = useState('');
     return (
       <div id="content">
         <h1>Add Product</h1>
         <form onSubmit={(event) => {
           event.preventDefault()
-          const name = this.productName.value 
-          const price = this.productPrice.value
-          const musicHash = this.props.musicHash
-          const aesKey = this.props.aesKey
-          if(this.props.memeHash !== ''){
-            this.props.createProduct(name, price, musicHash, aesKey) //we are calling the function in App.js which calls the fucntion in the SC
+          const name = productName
+          const aname = productAname
+          const price = productPrice
+          const musicIdentifier = productIdentifier
+          const aesKey = props.aesKey
+          if(props.musicHash !== ''){
+            props.createProduct(name, aname, price, musicIdentifier, aesKey) //we are calling the function in App.js which calls the fucntion in the SC
           } else {
             window.alert('Please upload file to IPFS first')
           }
@@ -23,18 +31,40 @@ class Main extends Component {
             <input
               id="productName"
               type="text"
-              ref={(input) => { this.productName = input }} //react manages the value of form elements using ref
+              value={productName}
+              onChange={(e) => { setProductName(e.target.value)}} //react manages the value of form elements using ref
               className="form-control"
-              placeholder="Product Name"
+              placeholder="Music Name"
+              required />
+          </div>
+          <div className="form-group mr-sm-2">
+            <input
+              id="productAname"
+              type="text"
+              value={productAname}
+              onChange={(e) => { setProductAname(e.target.value)}}
+              className="form-control"
+              placeholder="Artist's Name"
               required />
           </div>
           <div className="form-group mr-sm-2">
             <input
               id="productPrice"
               type="text"
-              ref={(input) => { this.productPrice = input }}
+              value={productPrice}
+              onChange={(e) => { setProductPrice(e.target.value)}}
               className="form-control"
               placeholder="Product Price in DAPP"
+              required />
+          </div>
+          <div className="form-group mr-sm-2">
+            <input
+              id="productIdentifier"
+              type="text"
+              value={productIdentifier}
+              onChange={(e) => { setProductIdentifier(e.target.value)}}
+              className="form-control"
+              placeholder="Music Identifier name used to fetch it from IPFS"
               required />
           </div>
           <div className="form-group mr-sm-2 ">
@@ -42,14 +72,18 @@ class Main extends Component {
               type="file"
               className="form-control "
               placeholder="Select product"
-              onChange={this.props.captureFile}
+              onChange={ props.captureFile }
               required />
             <input 
               type="button"
               className="form-control"
               value="Upload file to IPFS"
               placeholder="memeHash" 
-              onClick={this.props.onSubmitt}
+              onClick={() => {
+                dispatch(assignIdentifier(productIdentifier))
+                props.onSubmitt()
+              }}
+              // onClick={ props.onSubmitt}
               />
           </div>
           <button type="submit" className="btn btn-primary">Add Product</button>
@@ -61,6 +95,7 @@ class Main extends Component {
             <tr>
               <th scope="col">#</th>
               <th scope="col">Name</th>
+              <th scope="col">Artist</th>
               <th scope="col">Price</th>
               <th scope="col">Owner</th>
               <th scope="col"></th> 
@@ -70,21 +105,22 @@ class Main extends Component {
             </tr>
           </thead>
           <tbody id="productList">
-            { this.props.products.map((product,key) => { 
+            { props.products.map((product,key) => { 
                 return(
                   // we assign a key to each row elements..this is required by react so as to ensure react can identify the products with a key that is automatically given and incremented by .map method
                   <tr key={key}> 
                     <th scope="row">{ product.id.toString() }</th>
-                    <td>{ product.name }</td>
+                    <td>{ product.musicName }</td>
+                    <td>{ product.artistName }</td>
                     <td>{ product.price.toString()} DAPP</td>
                     <td>{ product.owner }</td>
                     <td>
-                    { product.owner!==this.props.account
+                    { product.owner!==props.account
                         ? <button
                             id={product.id}
                             className="btn btn-primary " 
                             onClick={(event) => {
-                              this.props.purchaseProduct(event.target.id)
+                              props.purchaseProduct(event.target.id)
                             }}
                         >
                           Buy
@@ -93,14 +129,14 @@ class Main extends Component {
                     }
                     </td>
                     <td>
-                    { this.props.bought === true 
+                    { props.bought === true 
                         ? <button
                         id={product.id}
                         className="btn btn-primary " 
                         role="button" 
                         aria-pressed="true"
                         onClick={(event) => {
-                          this.props.downloadMusic(event.target.id)
+                          props.downloadMusic(event.target.id)
                         }}
                         >
                             Download File
@@ -116,7 +152,7 @@ class Main extends Component {
                         role="button" 
                         aria-pressed="true"
                         onClick={(event) => {
-                          this.props.streamMusic(event.target.id)
+                          props.streamMusic(event.target.id)
                         }}
                         >
                             Stream
@@ -125,7 +161,7 @@ class Main extends Component {
                     }
                     </td>
                     <td>
-                    { product.owner!==this.props.account 
+                    { product.owner!==props.account 
                         ? <button
                         id={product.id}
                         // price= '1000000000000000000'
@@ -133,7 +169,7 @@ class Main extends Component {
                         role="button" 
                         aria-pressed="true"
                         onClick={(event) => {
-                           this.props.tipProduct(event.target.id, 2)
+                          props.tipProduct(event.target.id, 2)
                         }}
                         >
                             Tip 2 DAPP
@@ -150,7 +186,7 @@ class Main extends Component {
         </table>
       </div>
     );
-  }
+  
 }
 
 export default Main;

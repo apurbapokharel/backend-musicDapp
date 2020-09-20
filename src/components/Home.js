@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
-import Music from '../abis/Musicc.json'
-import Navbar from './Navbar'
-import Main from './Main'
-import crypto from 'crypto-js'
-import fileSaver from 'file-saver'
-import Player from './Player'
-import fleek from '@fleekhq/fleek-storage-js'
-require('dotenv/config')
+import Music from '../abis/Musicc.json';
+import Main from './Main';
+import crypto from 'crypto-js';
+import fileSaver from 'file-saver';
+import Player from './Player';
+import fleek from '@fleekhq/fleek-storage-js';
+import { connect } from 'react-redux';
+require('dotenv/config');
  
 const ipfsClient = require('ipfs-http-client')
 const ipfs = ipfsClient({ host : 'ipfs.infura.io', port:5001, protocol:'https'})
-console.log( process.env.REACT_APP_API_KEY,  process.env.REACT_APP_API_SECRET)
 
 function uintToString(uintArray) {
   var decodedStr = new TextDecoder('utf-8').decode(uintArray)
@@ -83,6 +82,17 @@ class Home extends Component {
     await this.loadBlockchainData()
   }
 
+  componentWillReceiveProps(nextProps)
+  {
+    console.log(nextProps.musicIdentifier, this.props.musicIdentifier);
+      if (this.props.musicIdentifier !== nextProps.musicIdentifier)
+      {
+        // this.setState({apiKey: 1})
+        // console.log('force');
+        // this.forceUpdate()
+      }
+  }
+
   async loadBlockchainData(){
     const web3 = window.web3
     const accounts = await web3.eth.getAccounts()
@@ -102,7 +112,7 @@ class Home extends Component {
           products: [...this.state.products, music]
         })
       }
-      // console.log(this.state.products)
+      console.log(this.state.products)
     }
     else {
       window.alert('Music contract not deployed to detected network.')
@@ -174,9 +184,7 @@ class Home extends Component {
   }
 
   // third step upload file to IPFS
-  onSubmitt = async (event) => {
-    console.log( process.env.REACT_APP_API_KEY,  process.env.REACT_APP_API_SECRET)
-    event.preventDefault()
+  onSubmitt = async () => {
     const input = {
       apiKey: new String(process.env.REACT_APP_API_KEY),
       apiSecret: new String(process.env.REACT_APP_API_SECRET),
@@ -184,18 +192,20 @@ class Home extends Component {
       data: this.state.buffer,
     };
     console.time("upload to ipfs")
-    const result = await fleek.upload(input)
+    // const result = await fleek.upload(input)
     console.timeEnd("upload to ipfs")
-    console.log(result)
+    // console.log(result)
+    // this.setState({musicHash: result.hash})
+    console.log('identifier is',this.props.musicIdentifier)
+    console.log(this.props);
   }
-
 
   //4th step download file from ipfs using hash
   download (id){
     this.state.products.map((product,key) => {
       if(product.id.toString() === id){ //must be in string 
         console.log('inside map')
-        var musicHash = product.musicHash
+        var musicHash = product.musicIdentifier
         var aesKey = product.aesKey
         this.setState({
           musicHash : musicHash,
@@ -263,10 +273,10 @@ class Home extends Component {
     fileSaver.saveAs(blob, 'filename.mp3')
   }
 
-  createProduct(name, price, musicHash, aesKey) {
+  createProduct(name, aname, price, musicIdentifier, aesKey) {
     this.setState({ 
       loading:true}, () => {
-        this.state.contract.methods.musicAdd(name, price, musicHash, aesKey).send({ from : this.state.account })
+        this.state.contract.methods.musicAdd(name, aname, price, musicIdentifier, aesKey).send({ from : this.state.account })
         this.setState({ loading:false })
       }
     )
@@ -355,4 +365,25 @@ class Home extends Component {
   }
 }
 
-export default Home;
+// const mapStateToProps = (state) => ({
+//   musicIdentifier: state.musicIdentifier,
+// })
+
+// const Container = connect(mapStateToProps)(Home)
+// export default Container
+
+// function mapStateToProps(state) {
+//   console.log(state);
+//   return{
+//     musicIdentifier: state.musicIdentifier
+//   }
+// }
+
+const mapStateToProps = (state) => {
+  return {
+    musicIdentifier: state.musicIdentifier,
+  }
+}
+
+
+export default connect(mapStateToProps)(Home);
